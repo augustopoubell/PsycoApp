@@ -1,38 +1,15 @@
-// HistoricoPagamentos.js
-// Tela de visualização de pagamentos anteriores dos pacientes
-
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, Alert } from 'react-native';
 
-// ATENÇÃO: Substitua 'SEU_ENDERECO_IP' pelo IP da sua máquina e a porta do seu backend!
-// O endpoint para pagamentos pode ser diferente, ajuste conforme seu backend.
 const API_PAGAMENTOS_URL = 'http://192.168.1.88:5000/api/pagamentos'; 
 
 export default function HistoricoPagamentos({ route, navigation }) {
     const [pagamentos, setPagamentos] = useState([]);
     const [loading, setLoading] = useState(true);
-
-    // No App.js, o `HistoricoPagamentos` é chamado diretamente sem `user` prop.
-    // Em um cenário real, você provavelmente precisaria do token do ADMIN para esta requisição.
-    // Isso pode ser obtido do AsyncStorage ou de um contexto de autenticação global aqui,
-    // ou garantido que a chamada da tela só ocorra se o admin estiver logado.
-    // Por simplicidade para este exemplo, simularemos o carregamento sem o token explícito.
-    // Se precisar do token aqui, você teria que passá-lo via `route.params` ou ler do AsyncStorage.
-
     const carregarPagamentos = async () => {
         setLoading(true);
         try {
-            // Em uma aplicação real, você faria uma chamada à API aqui:
-            // Ex: const response = await fetch(API_PAGAMENTOS_URL, {
-            //       headers: { 'Authorization': `Bearer SEU_TOKEN_ADMIN_AQUI` }
-            //    });
-            //    if (!response.ok) { throw new Error('Erro ao carregar pagamentos'); }
-            //    const data = await response.json();
-            //    setPagamentos(data);
-
-            // Simulação de dados e atraso de rede
-            await new Promise(resolve => setTimeout(resolve, 1800)); // Simula um delay maior
-
+            await new Promise(resolve => setTimeout(resolve, 1800)); 
             const mockPagamentos = [
                 { id: '1', paciente: 'João da Silva', valor: 'R$ 150,00', data: '01/05/2024' },
                 { id: '2', paciente: 'Maria Oliveira', valor: 'R$ 150,00', data: '10/05/2024' },
@@ -49,11 +26,9 @@ export default function HistoricoPagamentos({ route, navigation }) {
             setLoading(false);
         }
     };
-
-    // Carrega pagamentos quando o componente é montado
     useEffect(() => {
         carregarPagamentos();
-    }, []); // Array de dependências vazio para rodar apenas uma vez
+    }, []);
 
     const renderItem = ({ item }) => (
         <View style={styles.paymentCard}>
@@ -96,10 +71,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        backgroundColor: '#f0f4f8', // Fundo consistente
+        backgroundColor: '#f0f4f8',
     },
     titulo: {
-        fontSize: 26, // Tamanho consistente
+        fontSize: 26,
         fontWeight: 'bold',
         marginBottom: 20,
         textAlign: 'center',
@@ -125,7 +100,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginBottom: 10,
         borderLeftWidth: 5,
-        borderLeftColor: '#007BFF', // Cor azul para pagamentos
+        borderLeftColor: '#007BFF',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
@@ -146,7 +121,7 @@ const styles = StyleSheet.create({
     cardValor: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#28a745', // Cor verde para valor
+        color: '#28a745', 
     },
     cardData: {
         fontSize: 14,
