@@ -1,12 +1,8 @@
-// PacienteHome.js
-// Tela inicial do paciente com acesso ao diário emocional e funcionalidade de logout.
-
 import React from 'react';
 import { View, Text, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Importe o AsyncStorage
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
-export default function PacienteHome({ navigation, user, setUser }) { // Adicionado 'setUser'
-    // Função de logout
+export default function PacienteHome({ navigation, user, setUser }) {
     const handleLogout = async () => {
         Alert.alert(
             'Sair',
@@ -20,8 +16,8 @@ export default function PacienteHome({ navigation, user, setUser }) { // Adicion
                     text: 'Sair',
                     onPress: async () => {
                         try {
-                            await AsyncStorage.clear(); // Limpa todos os dados do AsyncStorage
-                            setUser(null); // Define o usuário como nulo, o que fará o App.js voltar para a tela de login
+                            await AsyncStorage.clear(); 
+                            setUser(null);
                         } catch (error) {
                             console.error('Erro ao fazer logout:', error);
                             Alert.alert('Erro', 'Não foi possível sair. Tente novamente.');
@@ -44,7 +40,7 @@ export default function PacienteHome({ navigation, user, setUser }) { // Adicion
                 <Text style={styles.buttonText}>Meu Diário Emocional</Text>
             </TouchableOpacity>
 
-            {/* Botão de Logout */}
+            {}
             <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
                 <Text style={styles.logoutButtonText}>Sair</Text>
             </TouchableOpacity>
@@ -58,22 +54,22 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
-        backgroundColor: '#f0f4f8', // Fundo consistente com AdminHome
+        backgroundColor: '#f0f4f8',
     },
     titulo: {
-        fontSize: 26, // Tamanho consistente
-        fontWeight: 'bold', // Peso da fonte consistente
-        marginBottom: 40, // Margem maior para separar do botão
-        color: '#333', // Cor consistente
+        fontSize: 26,
+        fontWeight: 'bold', 
+        marginBottom: 40, 
+        color: '#333',
         textAlign: 'center',
     },
     button: {
-        backgroundColor: '#007BFF', // Cor primária para o botão principal
+        backgroundColor: '#007BFF', 
         paddingVertical: 12,
         paddingHorizontal: 25,
         borderRadius: 8,
         marginBottom: 20,
-        width: '80%', // Largura do botão
+        width: '80%', 
         alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
@@ -87,10 +83,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     logoutButton: {
-        backgroundColor: '#dc3545', // Cor vermelha para logout, consistente com AdminHome
+        backgroundColor: '#dc3545', 
         padding: 12,
         borderRadius: 8,
-        marginTop: 30, // Mais margem para separar do botão principal
+        marginTop: 30, 
         width: '80%',
         alignItems: 'center',
     },
