@@ -1,49 +1,43 @@
-// frontend_psicoapp/screens/DiarioEmocional.js
-
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, FlatList, StyleSheet, Alert, TouchableOpacity, ActivityIndicator } from 'react-native';
 
-// ATENÇÃO: Substitua 'SEU_ENDERECO_IP' pelo IP da sua máquina e a porta do seu backend!
 const API_BASE_URL = 'http://192.168.1.88:5000/api/diario'; 
 
 export default function DiarioEmocional({ route, navigation, user }) {
-    // Pega o pacienteId e o token do objeto 'user' que foi passado via props do App.js
     const pacienteId = user ? user.id : null;
-    const userToken = user ? user.token : null; // Pegando o token do usuário
-
+    const userToken = user ? user.token : null;
     const [humorGeral, setHumorGeral] = useState('');
     const [descricao, setDescricao] = useState('');
     const [registros, setRegistros] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false); // Novo estado para controlar o salvamento
+    const [saving, setSaving] = useState(false);
 
     const humorEmojis = {
         'Muito Feliz': '😄', 'Feliz': '😊', 'Neutro': '😐', 'Triste': '😞',
-        'Ansioso': '😟', 'Irritado': '😡', 'Cansado': '😴', 'Grato': '🙏' // Adicionei alguns humores
+        'Ansioso': '😟', 'Irritado': '😡', 'Cansado': '😴', 'Grato': '🙏' 
     };
 
     useEffect(() => {
-        if (pacienteId && userToken) { // Verificando se o token também está disponível
+        if (pacienteId && userToken) { 
             carregarRegistros();
         } else {
             setLoading(false);
             Alert.alert('Erro de Autenticação', 'ID do paciente ou token não disponível. Por favor, faça login novamente.');
-            // Opcional: navigation.navigate('Login'); para forçar o login
         }
-    }, [pacienteId, userToken]); // Adicionei userToken como dependência
+    }, [pacienteId, userToken]);
 
     const carregarRegistros = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${API_BASE_URL}/paciente/${pacienteId}`, { // Endpoint mais específico
+            const response = await fetch(`${API_BASE_URL}/paciente/${pacienteId}`, {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${userToken}`, // Adicionando o token de autenticação
+                    'Authorization': `Bearer ${userToken}`,
                 },
             });
 
             if (!response.ok) {
-                const errorText = await response.text(); // Pega o texto do erro
+                const errorText = await response.text();
                 throw new Error(`Erro HTTP: ${response.status} - ${errorText}`);
             }
             const data = await response.json();
@@ -66,15 +60,15 @@ export default function DiarioEmocional({ route, navigation, user }) {
             return;
         }
 
-        setSaving(true); // Inicia o estado de salvamento
+        setSaving(true);
 
         const novoRegistro = {
             pacienteId: pacienteId,
             humorGeral: humorGeral,
-            descricao: descricao.trim(), // Remove espaços em branco extras
-            emocoesEspecificas: [], // Manter vazio ou adicionar um campo para isso no futuro
-            gatilhos: [], // Manter vazio ou adicionar um campo para isso no futuro
-            atividades: [], // Manter vazio ou adicionar um campo para isso no futuro
+            descricao: descricao.trim(),
+            emocoesEspecificas: [], 
+            gatilhos: [], 
+            atividades: [], 
         };
 
         try {
@@ -82,7 +76,7 @@ export default function DiarioEmocional({ route, navigation, user }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${userToken}`, // Adicionando o token de autenticação
+                    'Authorization': `Bearer ${userToken}`,
                 },
                 body: JSON.stringify(novoRegistro),
             });
@@ -95,12 +89,12 @@ export default function DiarioEmocional({ route, navigation, user }) {
             Alert.alert('Sucesso', 'Registro do diário salvo!');
             setHumorGeral('');
             setDescricao('');
-            carregarRegistros(); // Recarrega a lista após salvar
+            carregarRegistros(); 
         } catch (error) {
             console.error('Erro ao salvar registro do diário: ', error);
             Alert.alert('Erro', `Não foi possível salvar o registro: ${error.message}`);
         } finally {
-            setSaving(false); // Finaliza o estado de salvamento
+            setSaving(false); 
         }
     };
 
@@ -152,9 +146,9 @@ export default function DiarioEmocional({ route, navigation, user }) {
                 value={descricao}
                 onChangeText={setDescricao}
                 multiline
-                numberOfLines={4} // Sugere altura mínima para o TextInput
+                numberOfLines={4}
                 style={styles.input}
-                maxLength={500} // Limite de caracteres para a descrição
+                maxLength={500} 
             />
             {saving ? (
                 <ActivityIndicator size="large" color="#007BFF" />
@@ -183,7 +177,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
         backgroundColor: '#f0f4f8',
-        paddingTop: 40, // Ajuste para mais espaço no topo
+        paddingTop: 40, 
     },
     title: {
         fontSize: 28,
@@ -195,7 +189,7 @@ const styles = StyleSheet.create({
     subtitle: {
         fontSize: 18,
         fontWeight: '600',
-        marginBottom: 15, // Aumentei a margem
+        marginBottom: 15, 
         color: '#555',
         textAlign: 'center',
     },
@@ -203,34 +197,34 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'center',
-        marginBottom: 25, // Aumentei a margem
+        marginBottom: 25, 
     },
     moodButton: {
         padding: 10,
-        margin: 6, // Ajustei a margem entre os botões
-        borderRadius: 12, // Aumentei o arredondamento
+        margin: 6, 
+        borderRadius: 12, 
         backgroundColor: '#e9ecef',
         alignItems: 'center',
-        width: 100, // Ajustei a largura
+        width: 100, 
         borderWidth: 1,
         borderColor: '#ced4da',
-        shadowColor: '#000', // Sombra para profundidade
+        shadowColor: '#000', 
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.1,
         shadowRadius: 2,
         elevation: 2,
     },
     selectedMoodButton: {
-        backgroundColor: '#D1C4E9', // Cor roxa clara, mais relacionada à Psicologia
-        borderColor: '#673AB7', // Borda roxa mais escura
+        backgroundColor: '#D1C4E9', 
+        borderColor: '#673AB7', 
         borderWidth: 2,
     },
     moodEmoji: {
-        fontSize: 36, // Aumentei o tamanho do emoji
+        fontSize: 36,
         marginBottom: 5,
     },
     moodText: {
-        fontSize: 13, // Levemente maior
+        fontSize: 13,
         textAlign: 'center',
         color: '#333',
         fontWeight: '500',
@@ -241,11 +235,11 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 15,
         marginBottom: 20,
-        minHeight: 120, // Altura mínima um pouco maior
+        minHeight: 120, 
         textAlignVertical: 'top',
         backgroundColor: '#fff',
         fontSize: 16,
-        lineHeight: 22, // Melhorar legibilidade
+        lineHeight: 22, 
     },
     historyTitle: {
         fontSize: 22,
@@ -260,27 +254,27 @@ const styles = StyleSheet.create({
     },
     registroCard: {
         backgroundColor: '#ffffff',
-        padding: 18, // Um pouco mais de padding
+        padding: 18, 
         borderRadius: 10,
-        marginBottom: 12, // Um pouco mais de margem
-        borderLeftWidth: 6, // Borda mais proeminente
-        borderLeftColor: '#6a0dad', // Cor roxa consistente
+        marginBottom: 12, 
+        borderLeftWidth: 6, 
+        borderLeftColor: '#6a0dad', 
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.15, // Sombra um pouco mais visível
+        shadowOpacity: 0.15, 
         shadowRadius: 4,
         elevation: 5,
     },
     registroDate: {
-        fontSize: 13, // Levemente maior
+        fontSize: 13, 
         color: '#888',
         marginBottom: 5,
         fontStyle: 'italic',
     },
     registroHumor: {
-        fontSize: 19, // Levemente maior
+        fontSize: 19, 
         fontWeight: 'bold',
-        marginBottom: 8, // Mais espaço
+        marginBottom: 8, 
         color: '#333',
     },
     registroDescricao: {
@@ -299,7 +293,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#555',
     },
-    // Adicionei estilo para a mensagem de nenhum registro
     noRecordsText: {
         textAlign: 'center',
         marginTop: 20,
