@@ -1,12 +1,8 @@
-// frontend_psicoapp/App.js
-
 import React, { useState, useEffect } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-// Importa as telas - Certifique-se de que os caminhos estão corretos!
 import LoginScreen from './screens/LoginScreen';
 import CadastroScreen from './screens/CadastroScreen';
 import AdminHome from './screens/AdminHome';
@@ -18,32 +14,28 @@ import PsyViewScreen from './screens/PsyViewScreen';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [user, setUser] = useState(null); // Guarda { id, nome, tipo, token } do usuário logado
-  const [loadingUser, setLoadingUser] = useState(true); // Indica se está carregando usuário do AsyncStorage
-
-  // Carrega usuário do AsyncStorage na inicialização do app para persistir a sessão
+  const [user, setUser] = useState(null); 
+  const [loadingUser, setLoadingUser] = useState(true);
   useEffect(() => {
     const loadUserFromStorage = async () => {
       try {
         const userId = await AsyncStorage.getItem('userId');
         const userName = await AsyncStorage.getItem('userName');
         const userType = await AsyncStorage.getItem('userType');
-        const userToken = await AsyncStorage.getItem('userToken'); // Garanta que o token também seja carregado
+        const userToken = await AsyncStorage.getItem('userToken'); 
 
-        if (userId && userName && userType && userToken) { // Verifique se o token também existe
+        if (userId && userName && userType && userToken) { 
           setUser({ id: userId, nome: userName, tipo: userType, token: userToken });
         }
       } catch (error) {
         console.error('Erro ao carregar usuário do AsyncStorage:', error);
       } finally {
-        setLoadingUser(false); // Finaliza o carregamento
+        setLoadingUser(false); 
       }
     };
 
     loadUserFromStorage();
-  }, []); // Executa apenas uma vez na montagem do componente
-
-  // Mostra um indicador de carregamento enquanto verifica o usuário
+  }, []); 
   if (loadingUser) {
     return (
       <View style={styles.loadingContainer}>
@@ -52,36 +44,33 @@ export default function App() {
       </View>
     );
   }
-
-  // Define a rota inicial dinamicamente com base no usuário logado
   const getInitialRouteName = () => {
     if (user) {
       if (user.tipo === 'paciente') {
         return 'PacienteHome';
       } else if (user.tipo === 'psicologa') {
-        return 'PsicologaHome'; // Nome da tela para a psicóloga
+        return 'PsicologaHome'; 
       } else if (user.tipo === 'admin') {
         return 'AdminHome';
       }
     }
-    return 'Login'; // Se não há usuário ou tipo desconhecido, volta para o Login
+    return 'Login'; 
   };
 
-  const initialRoute = getInitialRouteName(); // Pega a rota inicial antes do retorno
-
+  const initialRoute = getInitialRouteName();
   return (
     <NavigationContainer>
-      {/* Usa a rota inicial dinâmica baseada no estado do usuário */}
+    {}
       <Stack.Navigator initialRouteName={initialRoute}>
         { 
-          !user ? ( // Se o usuário NÃO está logado
+          !user ? (
             <>
               <Stack.Screen name="Login" options={{ headerShown: false }}>
                 {(props) => <LoginScreen {...props} setUser={setUser} />}
               </Stack.Screen>
               <Stack.Screen name="Cadastro" component={CadastroScreen} options={{ title: 'Criar Conta' }} />
             </>
-          ) : user.tipo === 'paciente' ? ( // Se o usuário é Paciente
+          ) : user.tipo === 'paciente' ? ( 
             <>
               <Stack.Screen name="PacienteHome" options={{ title: user?.nome ? `Olá, ${user.nome}` : 'Olá, Paciente' }}>
                 {(props) => <PacienteHome {...props} user={user} setUser={setUser} />}
@@ -90,7 +79,7 @@ export default function App() {
                 {(props) => <DiarioEmocional {...props} user={user} />}
               </Stack.Screen>
             </>
-          ) : user.tipo === 'psicologa' ? ( // Se o usuário é Psicóloga
+          ) : user.tipo === 'psicologa' ? ( 
             <>
               <Stack.Screen name="PsicologaHome" options={{ title: user?.nome ? `Olá, Dra. ${user.nome}` : 'Olá, Psicóloga' }}>
                 {(props) => <AdminHome {...props} user={user} setUser={setUser} />} 
@@ -99,7 +88,7 @@ export default function App() {
                 {(props) => <PsyViewScreen {...props} user={user} />}
               </Stack.Screen>
             </>
-          ) : ( // Se o usuário é Admin (ou outros tipos)
+          ) : (
             <>
               <Stack.Screen name="AdminHome" options={{ title: user?.nome ? `Olá, ${user.nome}` : 'Olá, Administrador' }}>
                 {(props) => <AdminHome {...props} user={user} setUser={setUser} />}
@@ -112,7 +101,7 @@ export default function App() {
       </Stack.Navigator>
     </NavigationContainer>
   );
-} // Final da função App()
+}
 
 const styles = StyleSheet.create({
   loadingContainer: {
