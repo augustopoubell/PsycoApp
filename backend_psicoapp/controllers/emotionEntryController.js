@@ -1,6 +1,5 @@
-// controllers/emotionEntryController.js
 const EmotionEntry = require('../models/EmotionEntry');
-const User = require('../models/User'); // Importe o modelo User se ainda não o fez, para usar no populate
+const User = require('../models/User');
 
 exports.createEntry = async (req, res) => {
     try {
@@ -75,17 +74,13 @@ exports.deleteEntry = async (req, res) => {
     }
 };
 
-// --- NOVA FUNÇÃO A SER ADICIONADA ---
 exports.getAllEntriesForPsychologist = async (req, res) => {
     try {
-        // Busca TODOS os registros de diário de TODOS os pacientes
-        // E popula as informações do paciente (nome e email)
         const allDiaries = await EmotionEntry.find()
-                                            .populate('pacienteId', 'nome email') // Popula o campo pacienteId
-                                            .sort({ dataRegistro: -1 }); // Ordena do mais novo para o mais antigo
+                                            .populate('pacienteId', 'nome email') 
+                                            .sort({ dataRegistro: -1 });
         
         if (!allDiaries || allDiaries.length === 0) {
-            // Retorna um array vazio com status 200 se não houver registros
             return res.status(200).json([]); 
         }
         res.status(200).json(allDiaries);
