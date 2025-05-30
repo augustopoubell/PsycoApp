@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
 const emotionEntrySchema = new Schema({
     pacienteId: {
         type: mongoose.Schema.Types.ObjectId,
