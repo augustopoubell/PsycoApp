@@ -1,25 +1,14 @@
-// AdminHome.js
-// Tela de administração (para Admin e Psicóloga), lista pacientes fictícios e acesso ao histórico de pagamento.
-
 import React, { useState, useEffect } from 'react';
 import { View, Text, Button, StyleSheet, FlatList, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Importe o AsyncStorage
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function AdminHome({ navigation, user, setUser }) { // Adicionado 'user' e 'setUser'
+export default function AdminHome({ navigation, user, setUser }) {
     const [pacientes, setPacientes] = useState([]);
     const [loading, setLoading] = useState(true);
-
-    // Função para simular o carregamento de pacientes
     const carregarPacientes = async () => {
         setLoading(true);
         try {
-            // Em uma aplicação real, você faria uma chamada à API aqui:
-            // const response = await api.get('/admin/pacientes', { headers: { Authorization: `Bearer ${user.token}` } });
-            // setPacientes(response.data);
-
-            // Simulação de dados e atraso de rede
-            await new Promise(resolve => setTimeout(resolve, 1500)); // Simula delay da rede
-
+            await new Promise(resolve => setTimeout(resolve, 1500)); 
             const mockPacientes = [
                 { id: '1', nome: 'João da Silva', email: 'joao@example.com' },
                 { id: '2', nome: 'Maria Oliveira', email: 'maria@example.com' },
@@ -35,7 +24,6 @@ export default function AdminHome({ navigation, user, setUser }) { // Adicionado
         }
     };
 
-    // Função de logout
     const handleLogout = async () => {
         Alert.alert(
             'Sair',
@@ -49,8 +37,8 @@ export default function AdminHome({ navigation, user, setUser }) { // Adicionado
                     text: 'Sair',
                     onPress: async () => {
                         try {
-                            await AsyncStorage.clear(); // Limpa todos os dados do AsyncStorage
-                            setUser(null); // Define o usuário como nulo, o que fará o App.js voltar para a tela de login
+                            await AsyncStorage.clear();
+                            setUser(null);
                         } catch (error) {
                             console.error('Erro ao fazer logout:', error);
                             Alert.alert('Erro', 'Não foi possível sair. Tente novamente.');
@@ -62,10 +50,9 @@ export default function AdminHome({ navigation, user, setUser }) { // Adicionado
         );
     };
 
-    // Carrega pacientes quando o componente é montado
     useEffect(() => {
         carregarPacientes();
-    }, []); // Array de dependências vazio para rodar apenas uma vez na montagem
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -90,16 +77,16 @@ export default function AdminHome({ navigation, user, setUser }) { // Adicionado
                 />
             )}
 
-            {/* Acesso ao histórico de pagamentos apenas para o Admin */}
+            {}
             {user?.tipo === 'admin' && (
                 <Button
                     title="Ver Histórico de Pagamentos"
                     onPress={() => navigation.navigate('HistoricoPagamentos')}
-                    color="#28a745" // Cor diferente para o botão
+                    color="#28a745"
                 />
             )}
 
-            {/* Botão de Logout */}
+            {}
             <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
                 <Text style={styles.logoutButtonText}>Sair</Text>
             </TouchableOpacity>
@@ -111,7 +98,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        backgroundColor: '#f0f4f8', // Fundo mais suave
+        backgroundColor: '#f0f4f8',
     },
     titulo: {
         fontSize: 26,
@@ -133,11 +120,11 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         borderWidth: 1,
         borderColor: '#e0e0e0',
-        shadowColor: '#000', // Sombra para dar profundidade
+        shadowColor: '#000', 
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 3,
-        elevation: 3, // Elevação para Android
+        elevation: 3,
     },
     itemNome: {
         fontSize: 18,
@@ -159,7 +146,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     logoutButton: {
-        backgroundColor: '#dc3545', // Cor vermelha para logout
+        backgroundColor: '#dc3545',
         padding: 12,
         borderRadius: 8,
         marginTop: 20,
