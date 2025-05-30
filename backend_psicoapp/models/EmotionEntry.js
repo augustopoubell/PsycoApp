@@ -1,11 +1,10 @@
-// models/EmotionEntry.js
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const emotionEntrySchema = new Schema({
     pacienteId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', // Assume que você terá um modelo de usuário
+        ref: 'User',
         required: true,
         index: true
     },
