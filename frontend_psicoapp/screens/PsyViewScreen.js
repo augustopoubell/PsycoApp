@@ -1,44 +1,35 @@
-// frontend_psicoapp/screens/PsyViewScreen.js
-
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, Alert, RefreshControl } from 'react-native'; // Adicionado RefreshControl
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, Alert, RefreshControl } from 'react-native';
 
-// ATENÇÃO: Substitua 'SEU_ENDERECO_IP' pelo IP da sua máquina e a porta do seu backend!
-const API_PSY_URL = 'http://192.168.1.88:5000/api/diario/psicologa/all'; // Endpoint para psicóloga
+const API_PSY_URL = 'http://192.168.1.88:5000/api/diario/psicologa/all'; 
 
-export default function PsyViewScreen({ user }) { // Recebe user, que contém o token
+export default function PsyViewScreen({ user }) { 
     const [allRecords, setAllRecords] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [refreshing, setRefreshing] = useState(false); // Novo estado para RefreshControl
-
-    // Pega o token do usuário logado
+    const [refreshing, setRefreshing] = useState(false); 
     const userToken = user ? user.token : null;
-
-    // Emojis para o humor, consistente com DiarioEmocional
     const humorEmojis = {
         'Muito Feliz': '😄', 'Feliz': '😊', 'Neutro': '😐', 'Triste': '😞',
         'Ansioso': '😟', 'Irritado': '😡', 'Cansado': '😴', 'Grato': '🙏'
     };
 
     useEffect(() => {
-        if (userToken) { // Só busca os registros se o token estiver disponível
+        if (userToken) { 
             fetchPsyRecords();
         } else {
             setLoading(false);
             Alert.alert('Erro de Autenticação', 'Token de psicóloga não disponível. Por favor, faça login novamente.');
-            // Opcional: navigation.navigate('Login'); para forçar o login
         }
-    }, [userToken]); // Adicionei userToken como dependência
+    }, [userToken]); 
 
     const fetchPsyRecords = async () => {
         setLoading(true);
-        setRefreshing(true); // Ativa o refresh indicator
+        setRefreshing(true); 
         try {
-            // Enviando o token de autenticação da psicóloga no header 'Authorization'
             const response = await fetch(API_PSY_URL, {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${userToken}`, // Token da psicóloga
+                    'Authorization': `Bearer ${userToken}`,
                 },
             });
 
@@ -51,16 +42,16 @@ export default function PsyViewScreen({ user }) { // Recebe user, que contém o 
         } catch (error) {
             console.error('Erro ao carregar registros para a psicóloga: ', error);
             Alert.alert('Erro', `Não foi possível carregar os registros: ${error.message}`);
-            setAllRecords([]); // Limpa os registros em caso de erro
+            setAllRecords([]); 
         } finally {
             setLoading(false);
-            setRefreshing(false); // Desativa o refresh indicator
+            setRefreshing(false); 
         }
     };
 
     const renderRecordItem = ({ item }) => (
         <View style={styles.recordCard}>
-            {/* Exibe informações do paciente (graças ao .populate() no backend) */}
+            {}
             <Text style={styles.patientInfo}>
                 Paciente: <Text style={styles.patientName}>{item.pacienteId?.nome || 'Desconhecido'}</Text> 
                 {item.pacienteId?.email ? ` (${item.pacienteId.email})` : ''}
@@ -77,7 +68,7 @@ export default function PsyViewScreen({ user }) { // Recebe user, que contém o 
         </View>
     );
 
-    if (loading && !refreshing) { // Mostra o loading inicial apenas
+    if (loading && !refreshing) {
         return (
             <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color="#6a0dad" />
@@ -98,12 +89,12 @@ export default function PsyViewScreen({ user }) { // Recebe user, que contém o 
                     renderItem={renderRecordItem}
                     style={styles.list}
                     contentContainerStyle={{ paddingBottom: 20 }}
-                    refreshControl={ // Adiciona funcionalidade de "pull-to-refresh"
+                    refreshControl={ 
                         <RefreshControl
                             refreshing={refreshing}
                             onRefresh={fetchPsyRecords}
-                            colors={['#6a0dad']} // Cor do spinner de refresh
-                            tintColor={'#6a0dad'} // Cor do spinner no iOS
+                            colors={['#6a0dad']} 
+                            tintColor={'#6a0dad'}
                         />
                     }
                 />
@@ -116,11 +107,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        backgroundColor: '#f0f4f8', // Fundo consistente
-        paddingTop: 40, // Ajuste para mais espaço no topo
+        backgroundColor: '#f0f4f8', 
+        paddingTop: 40, 
     },
     title: {
-        fontSize: 28, // Tamanho consistente
+        fontSize: 28, 
         fontWeight: 'bold',
         marginBottom: 20,
         textAlign: 'center',
@@ -139,50 +130,50 @@ const styles = StyleSheet.create({
     },
     recordCard: {
         backgroundColor: '#fff',
-        padding: 18, // Mais padding
-        borderRadius: 10, // Mais arredondado
-        marginBottom: 12, // Mais margem
-        borderLeftWidth: 6, // Borda mais proeminente
-        borderLeftColor: '#6a0dad', // Cor principal do app (roxo)
+        padding: 18, 
+        borderRadius: 10, 
+        marginBottom: 12, 
+        borderLeftWidth: 6,
+        borderLeftColor: '#6a0dad', 
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.15, // Sombra mais visível
+        shadowOpacity: 0.15, 
         shadowRadius: 4,
         elevation: 5,
     },
     patientInfo: {
-        fontSize: 17, // Ligeiramente maior
+        fontSize: 17, 
         fontWeight: 'bold',
         marginBottom: 5,
         color: '#212529',
     },
     patientName: {
-        color: '#4a4a4a', // Cor para o nome do paciente
+        color: '#4a4a4a', 
         fontWeight: 'normal',
     },
     recordDate: {
-        fontSize: 13, // Tamanho consistente
+        fontSize: 13, 
         color: '#6c757d',
-        marginBottom: 8, // Mais espaço
+        marginBottom: 8, 
         fontStyle: 'italic',
     },
     recordHumor: {
-        fontSize: 16, // Ligeiramente maior
+        fontSize: 16, 
         fontWeight: '600',
-        marginBottom: 8, // Mais espaço
+        marginBottom: 8, 
         color: '#495057',
     },
     recordDescription: {
-        fontSize: 15, // Ligeiramente maior
+        fontSize: 15, 
         color: '#343a40',
-        lineHeight: 22, // Melhorar legibilidade
+        lineHeight: 22, 
         marginTop: 5,
     },
     psychologistNotes: {
-        fontSize: 14, // Ligeiramente maior
+        fontSize: 14, 
         fontStyle: 'italic',
         marginTop: 10,
-        color: '#007bff', // Cor azul para notas da psicóloga
+        color: '#007bff', 
         borderTopWidth: 1,
         borderTopColor: '#e9ecef',
         paddingTop: 10,
@@ -196,6 +187,5 @@ const styles = StyleSheet.create({
         lineHeight: 24,
     },
     list: {
-        // Estilos para a FlatList, pode adicionar um padding interno se necessário
     }
 });
